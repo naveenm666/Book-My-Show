@@ -1,113 +1,136 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { fetchMovies } from './lib/api';
+import { Movie } from './types/movie';
+import ImageSlider from '../components/ImageSlider';
 
-export default function Home() {
+const HomePage = async () => {
+  let movies: Movie[] = [];
+
+  try {
+    movies = await fetchMovies();
+    console.log('Fetched Movies:', movies);
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+  }
+
+  // Get the first and second set of five movies
+  const firstFiveMovies = movies.slice(0, 5);
+  const secondFiveMovies = movies.slice(5, 10);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <div>
+      <div className="px-4 py-4 bg-gray-200 min-h-screen flex flex-col">
+        <ImageSlider />
+
+        <div className="overflow-x-auto w-full max-w-screen-lg mx-auto mt-8 flex-1 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-bold text-gray-800">Recommended Movies</h1>
+            <Link href="/allmovies" className="text-blue-500 font-semibold">
+              See More
+            </Link>
+          </div>
+          <div className="flex space-x-4 overflow-x-auto">
+            {firstFiveMovies.map((movie) => (
+              <Link
+                key={movie.id}
+                href={`/movie/${encodeURIComponent(movie.title)}/${movie.id}`}
+              >
+                <div
+                  className="flex-shrink-0 w-48 h-64 bg-gray-100 rounded-md shadow-md overflow-hidden cursor-pointer"
+                >
+                  <img
+                    src={movie.poster}
+                    alt={movie.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-2">
+                  <p className="text-gray-700">{movie.title}</p>
+                  <p className="text-gray-500">{movie.genre}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-8 mb-4">
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-1440,h-120/stream-leadin-web-collection-202210241242.png"
+              alt="Recommended Movies"
+              className="w-full h-auto rounded-md shadow-md"
             />
-          </a>
+          </div>
+          <p className='mt-16 text-xl font-bold'>The Best of Live Events</p>
+          <div className="mt-2 flex space-x-9 overflow-x-auto">
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-800,h-800:l-text,ie-MTArIEV2ZW50cw%3D%3D,co-FFFFFF,ff-Roboto,fs-64,lx-48,ly-320,tg-b,pa-8_0_0_0,l-end:w-300/bmshp-desktop-amusement-park-collection-202404190106.png"
+              alt="Amusement Park Collection"
+              className="w-44 h-44 object-cover rounded-md shadow-md"
+            />
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-800,h-800:l-text,ie-MzArIEV2ZW50cw%3D%3D,co-FFFFFF,ff-Roboto,fs-64,lx-48,ly-320,tg-b,pa-8_0_0_0,l-end:w-300/workshop-and-more-web-collection-202211140440.png"
+              alt="Workshop and More"
+              className="w-44 h-44 object-cover rounded-md shadow-md"
+            />
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-800,h-800:l-text,ie-MTArIEV2ZW50cw%3D%3D,co-FFFFFF,ff-Roboto,fs-64,lx-48,ly-320,tg-b,pa-8_0_0_0,l-end:w-300/bmshp-desktop-kids-collection-202404190106.png"
+              alt="Kids Collection"
+              className="w-44 h-44 object-cover rounded-md shadow-md"
+            />
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-800,h-800:l-text,ie-NTUrIEV2ZW50cw%3D%3D,co-FFFFFF,ff-Roboto,fs-64,lx-48,ly-320,tg-b,pa-8_0_0_0,l-end:w-300/comedy-shows-collection-202211140440.png"
+              alt="Comedy Shows"
+              className="w-44 h-44 object-cover rounded-md shadow-md"
+            />
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-800,h-800:l-text,ie-MzUrIEV2ZW50cw%3D%3D,co-FFFFFF,ff-Roboto,fs-64,lx-48,ly-320,tg-b,pa-8_0_0_0,l-end:w-300/music-shows-collection-202211140440.png"
+              alt="Music Shows"
+              className="w-44 h-44 object-cover rounded-md shadow-md"
+            />
+          </div>
         </div>
       </div>
+      <div className="px-4 py-4 bg-gray-800 flex flex-col">
+        <div className="overflow-x-auto w-full max-w-screen-lg mx-auto">
+          <div className="mb-2">
+            <img
+              src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-1440,h-120/premiere-banner-web-collection-202208191200.png"
+              alt="Premiere Banner"
+              className="w-full h-auto rounded-md shadow-md "
+            />
+          </div>
+          <h1 className="text-xl font-bold text-white mt-6">Premieres</h1>
+          <div className="flex justify-between items-center ">
+          <p className='text-sm text-white '>Brand new releases every Friday</p>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+            <Link href="/allmovies" className="text-red-500 text-sm">
+              See More
+            </Link>
+          </div>
+          <div className="flex space-x-4 overflow-x-auto">
+            {secondFiveMovies.map((movie) => (
+              <Link
+                key={movie.id}
+                href={`/movie/${encodeURIComponent(movie.title)}/${movie.id}`}
+              >
+                <div
+                  className="flex-shrink-0 w-48 h-64 bg-gray-100 rounded-md shadow-md overflow-hidden cursor-pointer"
+                >
+                  <img
+                    src={movie.poster}
+                    alt={movie.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-2">
+                  <p className="text-white">{movie.title}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default HomePage;
